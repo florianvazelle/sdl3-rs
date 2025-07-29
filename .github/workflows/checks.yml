@@ -1,0 +1,203 @@
+name: Checks
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_TERM_COLOR: "always"
+
+on:
+  workflow_dispatch:
+  # Ensure the build works on master and tags
+  push:
+    branches: [master]
+    tags: ['*']
+  # Ensure the build works on each pull request
+  pull_request:
+
+jobs:
+  clippy-version-features:
+    name: Clippy - feature ${{ matrix.feature }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        feature:
+          - use-pkg-config
+          - use-vcpkg
+          - static-link
+          - link-framework
+          - build-from-source
+          - build-from-source-static
+          - build-from-source-unix-console
+          - ash
+          - default
+          - unsafe_textures
+          - gfx
+          - image
+          - ttf
+          - hidapi
+          - test-mode
+          - raw-window-handle
+
+    steps:
+      - name: checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        uses: ./.github/actions/install-linux-deps
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: clippy
+
+      - name: Cache cargo output
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: stable-${{ matrix.feature }}
+
+      - name: Fetch dependencies
+        run: cargo +stable fetch --locked
+
+      - name: Clippy
+        run: |
+          cargo +stable \
+            clippy \
+            --verbose \
+            --locked \
+            --offline \
+            --all-targets \
+            --features ${{ matrix.feature }} \
+            -- \
+            -D warnings
+
+  clippy-all-features:
+    name: Clippy - all features
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        uses: ./.github/actions/install-linux-deps
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: clippy
+
+      - name: Cache cargo output
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: stable-all-features
+
+      - name: Fetch dependencies
+        run: cargo +stable fetch --locked
+
+      - name: clippy
+        run: |
+          cargo +stable \
+            clippy \
+            --verbose \
+            --locked \
+            --offline \
+            --all-targets \
+            --all-features \
+            -- \
+            -D warnings
+
+  build-all-features:
+    name: Build - all features
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+
+    steps:
+      - name: checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        uses: ./.github/actions/install-linux-deps
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      - name: Cache cargo output
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: stable-all-features
+
+      - name: Fetch dependencies
+        run: cargo +stable fetch --locked
+
+      - name: Build
+        run: |
+          cargo +stable \
+            build \
+            --verbose \
+            --locked \
+            --offline \
+            --all-targets \
+            --all-features
+
+  build-all-examples:
+    name: Build - all features
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+
+    steps:
+      - name: checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        uses: ./.github/actions/install-linux-deps
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      - name: Cache cargo output
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: stable-all-examples
+
+      - name: Fetch dependencies
+        run: cargo +stable fetch --locked
+
+      - name: Build
+        run: |
+          cargo +stable \
+            build \
+            --verbose \
+            --locked \
+            --offline \
+            --all-targets \
+            --all-features \
+            --examples
+
+  fmt:
+    name: Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          components: rustfmt
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
