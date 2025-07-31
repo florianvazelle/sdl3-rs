@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   # Ensure the build works on master and tags
   push:
-    branches: [master]
+    branches: [master, dev]
     tags: ['*']
   # Ensure the build works on each pull request
   pull_request:
