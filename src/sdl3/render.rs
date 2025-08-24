@@ -1041,7 +1041,7 @@ impl<T> TextureCreator<T> {
     /// The access hint for the created texture is [`TextureAccess::Static`].
     ///
     /// ```no_run
-    /// use sdl3::pixels::PixelFormat;
+    /// use sdl3::pixels::{PixelFormat, PixelFormatEnum};
     /// use sdl3::surface::Surface;
     /// use sdl3::render::{Canvas, Texture};
     /// use sdl3::video::Window;
@@ -1059,7 +1059,7 @@ impl<T> TextureCreator<T> {
     /// let mut canvas: Canvas<Window> = window.into_canvas();
     /// let texture_creator = canvas.texture_creator();
     ///
-    /// let surface = Surface::new(512, 512, PixelFormat::RGB24).unwrap();
+    /// let surface = Surface::new(512, 512, PixelFormatEnum::RGB24.into()).unwrap();
     /// let texture = texture_creator.create_texture_from_surface(surface).unwrap();
     /// ```
     #[doc(alias = "SDL_CreateTextureFromSurface")]
@@ -2874,7 +2874,7 @@ impl Texture<'_> {
     /// A convenience function for [`TextureCreator::create_texture_from_surface`].
     ///
     /// ```no_run
-    /// use sdl3::pixels::PixelFormat;
+    /// use sdl3::pixels::{PixelFormat, PixelFormatEnum};
     /// use sdl3::surface::Surface;
     /// use sdl3::render::{Canvas, Texture};
     /// use sdl3::video::Window;
@@ -2892,7 +2892,7 @@ impl Texture<'_> {
     /// let mut canvas: Canvas<Window> = window.into_canvas();
     /// let texture_creator = canvas.texture_creator();
     ///
-    /// let surface = Surface::new(512, 512, PixelFormat::RGB24).unwrap();
+    /// let surface = Surface::new(512, 512, PixelFormatEnum::RGB24.into()).unwrap();
     /// let texture = Texture::from_surface(&surface, &texture_creator).unwrap();
     /// ```
     #[cfg(not(feature = "unsafe_textures"))]

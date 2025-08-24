@@ -82,6 +82,7 @@ impl<'a> KeyboardState<'a> {
     /// use sdl3::keyboard::Keycode;
     /// use sdl3::keyboard::Scancode;
     /// use std::collections::HashSet;
+    /// use sdl3::sys::keycode::SDL_KMOD_NONE;
     ///
     /// fn pressed_scancode_set(e: &sdl3::EventPump) -> HashSet<Scancode> {
     ///     e.keyboard_state().pressed_scancodes().collect()
@@ -89,7 +90,7 @@ impl<'a> KeyboardState<'a> {
     ///
     /// fn pressed_keycode_set(e: &sdl3::EventPump) -> HashSet<Keycode> {
     ///     e.keyboard_state().pressed_scancodes()
-    ///         .filter_map(Keycode::from_scancode)
+    ///         .filter_map(|scancode| Keycode::from_scancode(scancode, SDL_KMOD_NONE, false))
     ///         .collect()
     /// }
     ///

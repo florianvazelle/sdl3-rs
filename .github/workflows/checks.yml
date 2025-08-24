@@ -107,6 +107,51 @@ jobs:
             --all-targets \
             --features "$CI_BUILD_FEATURES ${{ matrix.feature }}"
 
+  test-version-features:
+    name: Test - feature ${{ matrix.feature }}
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        feature:
+          - ash
+          - unsafe_textures
+          - ttf
+          - hidapi
+          - raw-window-handle
+
+    steps:
+      - name: checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        uses: ./.github/actions/install-linux-deps
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      - name: Cache cargo output
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: stable-${{ matrix.feature }}
+
+      - name: Fetch dependencies
+        run: cargo +stable fetch --locked
+
+      - name: Build
+        run: |
+          cargo +stable \
+            test \
+            --verbose \
+            --locked \
+            --offline \
+            --examples \
+            --all-targets \
+            --features "$CI_BUILD_FEATURES ${{ matrix.feature }}"
+
   fmt:
     name: Formatting
     runs-on: ubuntu-latest

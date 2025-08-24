@@ -529,6 +529,7 @@ pub trait AudioFormatNum: Copy + 'static {
     /// ```
     /// // The AudioFormatNum trait has to be imported for the Channel::SILENCE part to work.
     /// use sdl3::audio::{AudioCallback, AudioFormatNum};
+    /// use sdl3::audio::AudioStream;
     ///
     /// struct Silence;
     ///
@@ -536,10 +537,8 @@ pub trait AudioFormatNum: Copy + 'static {
     /// where
     ///     Channel: AudioFormatNum,
     /// {
-    ///     fn callback(&mut self, out: &mut [Channel]) {
-    ///         for dst in out.iter_mut() {
-    ///             *dst = Channel::SILENCE;
-    ///        }
+    ///     fn callback(&mut self, _stream: &mut AudioStream, _available: i32) {
+    ///         
     ///     }
     /// }
     /// ```
