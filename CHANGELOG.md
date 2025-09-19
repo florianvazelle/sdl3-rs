@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added IOStream::from_vec.
 
 ### <!-- 1 -->Changed
+- Automate changelog generation
 - Bump minor version, sort of breaking changes
 - Update log enums ([#222](https://github.com/vhspace/sdl3-rs/pull/222))
 - Add lint pr title workflow ([#229](https://github.com/vhspace/sdl3-rs/pull/229))
