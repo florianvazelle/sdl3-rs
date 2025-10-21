@@ -2249,3 +2249,27 @@ pub fn drivers() -> DriverIterator {
         index: 0,
     }
 }
+
+
+#[doc(alias = "SDL_GetDisplayForWindow")]
+pub fn display_for_window(window: &Window) -> Result<Display, Error> {
+    let result = unsafe { sys::video::SDL_GetDisplayForWindow(window.context.raw) };
+
+    if result != 0 {
+        Ok(Display::from_ll(result))
+    } else {
+        Err(get_error())
+    }
+}
+
+
+#[doc(alias = "SDL_GetDisplayContentScale")]
+pub fn display_content_scale(display: &Display) ->Result<f32, Error> {
+    let result =  unsafe { sys::video::SDL_GetDisplayContentScale(display.to_ll()) };
+
+    if result != 0.0 {
+        Ok(result)
+    } else {
+        Err(get_error())
+    }
+}
